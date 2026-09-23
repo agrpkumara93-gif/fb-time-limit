@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Facebook Daily Time Limit",
+  "version": "1.0.0",
+  "description": "Limits active Facebook usage to 15 minutes per calendar day.",
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "*://*.facebook.com/*",
+    "*://facebook.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.facebook.com/*",
+        "*://facebook.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Facebook Daily Limit"
+  }
+}

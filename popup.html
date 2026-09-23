@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Facebook Daily Limit</title>
+  <style>
+    body { font-family: Arial, sans-serif; width: 260px; margin: 0; padding: 18px; background: #fff; color: #1f2937; }
+    h1 { font-size: 18px; margin: 0 0 12px; }
+    .time { font-size: 32px; font-weight: 700; margin: 8px 0; }
+    .muted { color: #6b7280; font-size: 13px; line-height: 1.4; }
+    .bar { height: 9px; background: #e5e7eb; border-radius: 999px; overflow: hidden; margin: 14px 0; }
+    .fill { height: 100%; width: 0%; background: #1877f2; }
+    .locked { font-weight: 700; color: #b91c1c; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Facebook Daily Limit</h1>
+  <div class="time" id="remaining">--:--</div>
+  <div class="muted">remaining today out of 15:00</div>
+  <div class="bar"><div class="fill" id="fill"></div></div>
+  <div class="muted" id="used"></div>
+  <div class="locked" id="locked"></div>
+  <script src="popup.js"></script>
+</body>
+</html>
