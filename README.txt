@@ -17,3 +17,6 @@ Install:
 4. Click Load unpacked.
 5. Select the facebook-daily-limit folder.
 6. Pin the extension if you want to see remaining time.
+
+
+you are allow to use this freely. no personal data captured.
