@@ -1,33 +1,72 @@
-name: Build Chrome Extension
+name: Build and Security Scan Chrome Extension
 
 on:
   push:
     branches:
       - main
+
   pull_request:
     branches:
       - main
+
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  build:
+  security-scan-and-build:
+    name: Trivy Scan & Build
     runs-on: ubuntu-latest
 
     steps:
+      # ---------------------------------------------------------
+      # 1. Checkout source code
+      # ---------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ---------------------------------------------------------
+      # 2. Validate Chrome Extension manifest.json
+      # ---------------------------------------------------------
       - name: Validate manifest.json
         run: |
           if [ ! -f "manifest.json" ]; then
-            echo "manifest.json not found"
+            echo "ERROR: manifest.json not found"
             exit 1
           fi
 
           python -m json.tool manifest.json > /dev/null
+
           echo "manifest.json is valid"
 
-      - name: Create extension package
+      # ---------------------------------------------------------
+      # 3. Trivy Security Scan
+      # ---------------------------------------------------------
+      - name: Run Trivy Security Scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+
+          # Fail pipeline if HIGH or CRITICAL vulnerabilities exist
+          exit-code: '1'
+
+          severity: 'HIGH,CRITICAL'
+
+          # Do not fail for vulnerabilities that currently
+          # have no available fix
+          ignore-unfixed: true
+
+          # Scan dependencies, secrets and configuration
+          scanners: 'vuln,secret,misconfig'
+
+      # ---------------------------------------------------------
+      # 4. Build Extension
+      # Runs ONLY if Trivy passes
+      # ---------------------------------------------------------
+      - name: Create Extension Package
         run: |
           mkdir -p dist
 
@@ -38,7 +77,10 @@ jobs:
             -x "*.gitignore" \
             -x "README.md"
 
-      - name: Upload extension artifact
+      # ---------------------------------------------------------
+      # 5. Upload ZIP artifact
+      # ---------------------------------------------------------
+      - name: Upload Extension Artifact
         uses: actions/upload-artifact@v4
         with:
           name: facebook-daily-limit
